@@ -69,7 +69,7 @@ Open **http://localhost:3000**.
 
 | Script | Description |
 | --- | --- |
-| `npm run dev` | Next.js dev server (Turbopack) |
+| `npm run dev` | Next.js dev server (**Webpack** — matches `@ducanh2912/next-pwa`, which injects a Webpack config) |
 | `npm run build` | Production build with **Webpack** (required for the PWA plugin) |
 | `npm run start` | Start production server |
 | `npm run lint` | ESLint (flat config + `eslint-config-next`) |
