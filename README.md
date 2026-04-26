@@ -29,6 +29,7 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 
 - **Shadcn UI** primitives (card, button, input, form patterns)
 - **Tailwind CSS 4** with the project’s design tokens in `src/app/globals.css`
+- **Light / system / dark** themes via **`next-themes`** (class on `<html>`), a compact **`ThemeToggle`** in the header, and **Sonner** toasts that follow **`resolvedTheme`**
 - Responsive layout for **mobile and desktop**
 
 ## 🛠 Tech Stack

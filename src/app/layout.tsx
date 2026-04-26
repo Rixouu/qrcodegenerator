@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
+import { AppToaster } from "@/components/app-toaster";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
+import { ThemeProvider } from "@/components/theme-provider";
 import { appleStartupImages } from "@/lib/pwa-apple-startup";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -42,6 +43,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#fafafc" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
+  colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -53,13 +55,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.className} min-h-[100dvh] touch-manipulation antialiased`}
       >
-        {children}
-        <PwaInstallBanner />
-        <Toaster position="bottom-center" richColors />
+        <ThemeProvider>
+          {children}
+          <PwaInstallBanner />
+          <AppToaster />
+        </ThemeProvider>
       </body>
     </html>
   );
