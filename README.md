@@ -1,5 +1,3 @@
----
-
 **QR Code Generator** is a small, focused web app for creating scannable QR codes from any text or URL: pick foreground and background colors, preview in real time, and download a PNG—no accounts, no backend required for the core flow.
 
 The current product was created by [Jonathan Rycx](https://github.com/Rixouu), who leads product direction, design, and full-stack implementation.
