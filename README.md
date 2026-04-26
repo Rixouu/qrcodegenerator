@@ -2,7 +2,7 @@
 
 **QR Code Generator** is a small, focused web app for creating scannable QR codes from any text or URL: pick foreground and background colors, preview in real time, and download a PNG—no accounts, no backend required for the core flow.
 
-Next.js 15 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
+Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 
 ## ✨ Key Features
 
@@ -17,11 +17,13 @@ Next.js 15 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 - **Download as PNG** from the in-page QR preview (canvas-backed export)
 - Toast feedback via **Sonner**
 
-### 📱 PWA & install UX
+### 📱 PWA, splash & install UX
 
 - **Web app manifest** and **service worker** (production builds) via [`@ducanh2912/next-pwa`](https://github.com/DuCanhGH/next-pwa)
+- **Apple startup splash screens** (`metadata.appleWebApp.startupImage`) generated for common iPhone and iPad portrait sizes — source SVG `public/icon-qr-code.svg`, outputs under `public/splash/`; spec lives in `src/lib/apple-splash-spec.json`
+- **Touch icons:** `public/icons/icon-192.png`, `icon-512.png`, `apple-touch-icon.png` (regenerate with `npm run generate:splash` after changing the SVG)
 - **`PwaInstallBanner`**: Chrome **Install** when `beforeinstallprompt` is available; **iOS Safari** guidance for **Add to Home Screen**; dismiss state stored in `localStorage`
-- App icon: `public/icon-qr-code.svg`
+- **Mobile layout:** `100dvh`, safe-area padding on the home surface, `viewport-fit=cover`, `touch-manipulation`, and `apple-mobile-web-app-status-bar-style` set to **black-translucent** for a more native shell feel
 
 ### 🎨 UI
 
@@ -33,7 +35,7 @@ Next.js 15 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 
 ### Frontend
 
-- **Next.js 15** (App Router, `src/app`)
+- **Next.js 16** (App Router, `src/app`) — production builds use **`next build --webpack`** because `@ducanh2912/next-pwa` injects a Webpack configuration ([Turbopack is default in v16](https://nextjs.org/docs/app/guides/upgrading/version-16#turbopack-by-default))
 - **React 19**
 - **TypeScript**
 - **Tailwind CSS 4** (`@tailwindcss/postcss`)
@@ -49,7 +51,7 @@ Next.js 15 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 
 ### Prerequisites
 
-- **Node.js 20+** (recommended; LTS aligns with current Next.js defaults)
+- **Node.js 20.9+** (Next.js 16 minimum)
 - **npm**
 
 ### Installation
@@ -65,24 +67,30 @@ Open **http://localhost:3000**.
 
 ### Scripts
 
-| Script        | Description                    |
-| ------------- | ------------------------------ |
-| `npm run dev` | Next.js dev server             |
-| `npm run build` | Production build (`next build`) |
-| `npm run start` | Start production server       |
-| `npm run lint`  | ESLint (`next lint`)           |
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Next.js dev server (Turbopack) |
+| `npm run build` | Production build with **Webpack** (required for the PWA plugin) |
+| `npm run start` | Start production server |
+| `npm run lint` | ESLint (flat config + `eslint-config-next`) |
+| `npm run generate:splash` | Regenerate Apple splashes + PNG icons from `public/icon-qr-code.svg` (uses **sharp**) |
 
-> **PWA note:** the service worker is **disabled in development** so hot reload stays predictable. Run a **production build** (`npm run build && npm run start`) to verify install prompts and offline caching.
+> **PWA note:** the service worker is **disabled in development** so hot reload stays predictable. Run a **production build** (`npm run build && npm run start`) to verify install prompts, splash screens, and offline caching.
 
 ## 📁 Project structure
 
 ```text
 qrcode-generator/
-├── public/                 # Static assets (PWA outputs are gitignored in prod)
+├── public/
+│   ├── icons/              # PNG icons (generated)
+│   ├── splash/             # Apple startup images (generated)
+│   └── icon-qr-code.svg    # Source artwork for splashes + icons
+├── scripts/
+│   └── generate-apple-splash.mjs
 ├── src/
 │   ├── app/                # App Router: layout, page, globals, manifest
-│   ├── components/       # UI + `pwa-install-banner`
-│   └── lib/                # Utilities (e.g. `cn`)
+│   ├── components/         # UI + `pwa-install-banner`
+│   └── lib/                # `cn`, splash spec, `pwa-apple-startup`
 ├── next.config.mjs         # Next config + PWA wrapper
 ├── package.json
 └── README.md
@@ -104,11 +112,7 @@ See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-
 - **Security / cache headers:** `vercel.json`
 - **Images:** `remotePatterns` for `vercel.com` and `nextjs.org` (replace or extend if you add remote images)
 - **`package.json` > `overrides`:** pins transitive **`postcss`** (≥ 8.5.10) and **`serialize-javascript`** (from Workbox via the PWA plugin) so `npm audit` stays clean without downgrading Next.js
-
-### Stack upgrades (Apr 2026)
-
-- **Next.js** is on the latest **15.5.x** patch line (`15.5.15`) for security fixes; **Next.js 16** is available if you want a major bump and are ready to follow the [upgrade guide](https://nextjs.org/docs/app/building-your-application/upgrading).
-- **React 19** is already in use; keep `@types/react` aligned with your TypeScript setup when you upgrade.
+- **`outputFileTracingRoot`** in `next.config.mjs` avoids incorrect workspace root detection when a parent directory contains another lockfile
 
 ## 🤝 Contributing
 

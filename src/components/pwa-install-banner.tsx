@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,8 +24,16 @@ function isIosSafari(): boolean {
   return isIos && isSafari;
 }
 
+const clientSubscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export function PwaInstallBanner() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    clientSubscribe,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
   const [visible, setVisible] = useState(false);
   const [iosHint, setIosHint] = useState(false);
   const [deferredPrompt, setDeferredPrompt] =
@@ -39,10 +47,6 @@ export function PwaInstallBanner() {
     }
     setVisible(false);
     setIosHint(false);
-  }, []);
-
-  useEffect(() => {
-    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -101,9 +105,9 @@ export function PwaInstallBanner() {
     >
       <div className="mx-auto flex max-w-lg items-start gap-3">
         <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element -- local SVG app icon */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- static PWA icon */}
           <img
-            src="/icon-qr-code.svg"
+            src="/icons/apple-touch-icon.png"
             alt=""
             width={48}
             height={48}

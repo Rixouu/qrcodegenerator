@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
+import { appleStartupImages } from "@/lib/pwa-apple-startup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,20 +15,31 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: "QR Code Generator",
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
+    startupImage: appleStartupImages,
   },
   formatDetection: {
     telephone: false,
   },
   icons: {
-    icon: [{ url: "/icon-qr-code.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/icon-qr-code.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/icon-qr-code.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      {
+        url: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
   },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: light)", color: "#fafafc" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
   width: "device-width",
@@ -42,7 +54,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} min-h-[100dvh] touch-manipulation antialiased`}
+      >
         {children}
         <PwaInstallBanner />
         <Toaster position="bottom-center" richColors />
