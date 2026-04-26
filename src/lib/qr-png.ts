@@ -2,33 +2,28 @@
  * Rasterize the QR SVG (foreground only) onto a solid background and return a PNG blob.
  */
 export function rgbCssToHex(cssColor: string): string {
-  const trimmed = cssColor.trim();
-  if (trimmed.startsWith("#")) {
-    const hex = trimmed.slice(1);
-    if (hex.length === 3) {
-      return (
-        "#" +
-        hex
-          .split("")
-          .map((c) => c + c)
-          .join("")
-      );
-    }
-    return trimmed.length === 7 ? trimmed : "#000000";
-  }
-  const m = trimmed.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-  if (!m) return "#000000";
-  const r = Number(m[1]);
-  const g = Number(m[2]);
-  const b = Number(m[3]);
+  if (typeof document === "undefined") return "#000000";
+  const canvas = document.createElement("canvas");
+  canvas.width = 1;
+  canvas.height = 1;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return "#000000";
+  ctx.fillStyle = cssColor;
+  ctx.fillRect(0, 0, 1, 1);
+  const data = ctx.getImageData(0, 0, 1, 1).data;
   return (
     "#" +
-    [r, g, b]
-      .map((n) =>
-        Math.max(0, Math.min(255, n)).toString(16).padStart(2, "0"),
-      )
+    [data[0], data[1], data[2]]
+      .map((n) => Math.max(0, Math.min(255, n)).toString(16).padStart(2, "0"))
       .join("")
   );
+}
+
+function getLuminance(hex: string) {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
 export function readThemeQrHexFromDocument(): { fg: string; bg: string } {
@@ -43,9 +38,16 @@ export function readThemeQrHexFromDocument(): { fg: string; bg: string } {
   );
   document.body.appendChild(probe);
   const s = getComputedStyle(probe);
-  const fg = rgbCssToHex(s.color);
-  const bg = rgbCssToHex(s.backgroundColor);
+  let fg = rgbCssToHex(s.color);
+  let bg = rgbCssToHex(s.backgroundColor);
   document.body.removeChild(probe);
+
+  if (getLuminance(bg) < 0.5) {
+    const temp = fg;
+    fg = bg;
+    bg = temp;
+  }
+
   return { fg, bg };
 }
 

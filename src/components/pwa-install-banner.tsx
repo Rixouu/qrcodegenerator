@@ -90,68 +90,63 @@ export function PwaInstallBanner() {
   return (
     <div
       className={cn(
-        "fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 p-4 shadow-lg backdrop-blur-md",
-        "pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3",
+        "fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 mx-auto max-w-md animate-in slide-in-from-bottom-5 fade-in duration-500",
+        "rounded-2xl border border-border/50 bg-background/80 p-3 shadow-2xl backdrop-blur-xl",
+        "dark:bg-black/60 dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] dark:border-white/10",
       )}
       role="dialog"
       aria-label="Install app"
     >
-      <div className="mx-auto flex max-w-lg items-start gap-3">
-        <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border bg-muted">
+      <div className="flex items-center gap-3">
+        <div className="relative size-11 shrink-0 overflow-hidden rounded-xl border border-white/10 shadow-inner">
           {/* eslint-disable-next-line @next/next/no-img-element -- static PWA icon */}
           <img
             src="/icons/apple-touch-icon.png"
             alt=""
-            width={48}
-            height={48}
-            className="size-12 object-contain p-1"
+            width={44}
+            height={44}
+            className="size-full object-cover"
             fetchPriority="high"
           />
         </div>
-        <div className="min-w-0 flex-1 space-y-2">
-          <p className="text-sm font-semibold leading-tight">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold tracking-tight text-foreground">
             {iosHint && !deferredPrompt
               ? "Add to Home Screen"
               : "Install QR Code Generator"}
           </p>
           {iosHint && !deferredPrompt ? (
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Tap the Share button{" "}
-              <span className="whitespace-nowrap font-medium text-foreground">
-                (square with arrow)
-              </span>
-              , then choose{" "}
-              <span className="font-medium text-foreground">
-                Add to Home Screen
-              </span>
-              .
+            <p className="text-xs text-muted-foreground leading-snug mt-0.5">
+              Tap Share, then choose <span className="font-medium text-foreground">Add to Home Screen</span>.
             </p>
           ) : (
-            <p className="text-xs text-muted-foreground">
-              Install the app for quick access and offline-friendly caching.
+            <p className="text-xs text-muted-foreground leading-snug mt-0.5">
+              Get the app for offline access.
             </p>
           )}
-          <div className="flex flex-wrap gap-2 pt-1">
-            {deferredPrompt ? (
-              <Button type="button" size="sm" onClick={handleInstall}>
-                Install
-              </Button>
-            ) : null}
-            <Button type="button" size="sm" variant="outline" onClick={dismiss}>
-              {deferredPrompt ? "Not now" : "Got it"}
-            </Button>
-          </div>
         </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="shrink-0 -mt-1"
-          onClick={dismiss}
-          aria-label="Dismiss"
-        >
-          <X className="size-4" />
-        </Button>
+        <div className="flex shrink-0 items-center gap-1.5 ml-2">
+          {deferredPrompt ? (
+            <Button
+              type="button"
+              size="sm"
+              className="h-8 rounded-full px-4 text-xs font-semibold shadow-md transition-transform hover:scale-105 active:scale-95"
+              onClick={handleInstall}
+            >
+              Install
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            className="size-8 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+            onClick={dismiss}
+            aria-label="Dismiss"
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
