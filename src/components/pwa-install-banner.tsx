@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useClientMounted } from "@/hooks/use-client-mounted";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "pwa-install-banner-dismissed";
@@ -24,16 +25,8 @@ function isIosSafari(): boolean {
   return isIos && isSafari;
 }
 
-const clientSubscribe = () => () => {};
-const getClientSnapshot = () => true;
-const getServerSnapshot = () => false;
-
 export function PwaInstallBanner() {
-  const mounted = useSyncExternalStore(
-    clientSubscribe,
-    getClientSnapshot,
-    getServerSnapshot,
-  );
+  const mounted = useClientMounted();
   const [visible, setVisible] = useState(false);
   const [iosHint, setIosHint] = useState(false);
   const [deferredPrompt, setDeferredPrompt] =

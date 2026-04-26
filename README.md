@@ -10,49 +10,73 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 
 - Enter any **URL or plain text**; the QR updates as you type
 - **Foreground and background** color controls with live preview
+- **Error correction** (L / M / Q / H) and **matrix size** (128–400px) controls
 - Built on [`react-qr-code`](https://www.npmjs.com/package/react-qr-code)
 
-### 💾 Download
+### 🎨 Theme-aware colors
 
-- **Download as PNG** from the in-page QR preview (canvas-backed export)
-- Toast feedback via **Sonner**
+- Default QR colors follow **light/dark design tokens** via a DOM probe (`readThemeQrHexFromDocument`)
+- Editing colors **locks** them; **Sync with theme** resets the lock and reapplies token colors
+- **`ThemeColorMeta`** updates `<meta name="theme-color">` when the resolved theme changes (PWA / mobile chrome bar)
+
+### 💾 Export & share
+
+- **Download** PNG (same canvas pipeline as before)
+- **Copy image** to the clipboard (`ClipboardItem` image/png) where supported
+- **Share** via the Web Share API with a PNG file when `navigator.canShare` allows it
+- Successful export actions append an entry to **local history** (see below)
+
+### 📜 Local history
+
+- Last **20** payloads (value, colors, level, size) in **`localStorage`** (`qr-code-generator-history-v1`)
+- **Recent** list in the card: tap to **restore**; **Clear** wipes storage
 
 ### 📱 PWA, splash & install UX
 
 - **Web app manifest** and **service worker** (production builds) via [`@ducanh2912/next-pwa`](https://github.com/DuCanhGH/next-pwa)
-- **Apple startup splash screens** (`metadata.appleWebApp.startupImage`) generated for common iPhone and iPad portrait sizes — source SVG `public/icon-qr-code.svg`, outputs under `public/splash/`; spec lives in `src/lib/apple-splash-spec.json`
-- **Touch icons:** `public/icons/icon-192.png`, `icon-512.png`, `apple-touch-icon.png` (regenerate with `npm run generate:splash` after changing the SVG)
-- **`PwaInstallBanner`**: Chrome **Install** when `beforeinstallprompt` is available; **iOS Safari** guidance for **Add to Home Screen**; dismiss state stored in `localStorage`
-- **Mobile layout:** `100dvh`, safe-area padding on the home surface, `viewport-fit=cover`, `touch-manipulation`, and `apple-mobile-web-app-status-bar-style` set to **black-translucent** for a more native shell feel
+- **Apple startup splash screens** (`metadata.appleWebApp.startupImage`) — spec in `src/lib/apple-splash-spec.json`, assets in `public/splash/`
+- **Touch icons** under `public/icons/` (regenerate with `npm run generate:splash` after changing the SVG)
+- **`PwaInstallBanner`**: Chrome install prompt + iOS “Add to Home Screen” guidance
+- **Mobile layout:** `100dvh`, safe-area padding, `viewport-fit=cover`, `touch-manipulation`, `black-translucent` status bar
 
-### 🎨 UI
+### 🔎 SEO & social
 
-- **Shadcn UI** primitives (card, button, input, form patterns)
-- **Tailwind CSS 4** with the project’s design tokens in `src/app/globals.css`
-- **Light / system / dark** themes via **`next-themes`** (class on `<html>`), a compact **`ThemeToggle`** in the header, and **Sonner** toasts that follow **`resolvedTheme`**
-- Responsive layout for **mobile and desktop**
+- **`metadataBase`**, Open Graph, and Twitter card metadata in `src/app/layout.tsx`
+- **`src/lib/site-url.ts`**: set **`NEXT_PUBLIC_SITE_URL`** in production (e.g. `https://your-domain.com`) so canonical URLs, `robots.txt`, `sitemap.xml`, and social images resolve correctly
+- **`opengraph-image.tsx`** — generated 1200×630 preview card
+
+### ♿ Accessibility
+
+- **Skip to content** link (visually hidden until focus) → `#main-content` with `tabIndex={-1}`
+- QR preview wrapped in **`role="img"`** + **`aria-label`** describing the encoded payload (truncated)
+- Labeled controls for URL, correction level, size, colors, and theme buttons (`aria-label` on icon-only theme controls)
+
+### 🎨 UI & theme
+
+- **Shadcn UI** + **Tailwind CSS 4** tokens in `src/app/globals.css`
+- **Light / system / dark** via **`next-themes`**, **`ThemeToggle`** in the header, **Sonner** synced to **`resolvedTheme`**
 
 ## 🛠 Tech Stack
 
 ### Frontend
 
-- **Next.js 16** (App Router, `src/app`) — production builds use **`next build --webpack`** because `@ducanh2912/next-pwa` injects a Webpack configuration ([Turbopack is default in v16](https://nextjs.org/docs/app/guides/upgrading/version-16#turbopack-by-default))
-- **React 19**
-- **TypeScript**
-- **Tailwind CSS 4** (`@tailwindcss/postcss`)
-- **Shadcn UI** + **Radix** primitives
-- **Lucide** icons
+- **Next.js 16** (App Router, `src/app`) — **`next build --webpack`** for `@ducanh2912/next-pwa`
+- **React 19** · **TypeScript** · **Tailwind CSS 4**
+- **Shadcn UI** + **Radix** · **Lucide**
 
 ### QR & forms
 
-- **react-qr-code** for matrix rendering
-- **react-hook-form** + **Zod** + **@hookform/resolvers** (available for form validation patterns)
+- **react-qr-code** · **react-hook-form** + **Zod** + **@hookform/resolvers** (available for validation-heavy flows)
+
+### Testing
+
+- **Playwright** (`e2e/`) — smoke tests for home, theme toggle, download toast, skip link. First run: **`npx playwright install chromium`**. The dev server uses **port 4173** so tests never attach to a stray `localhost:3000` dev session.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Node.js 20.9+** (Next.js 16 minimum)
+- **Node.js 20.9+**
 - **npm**
 
 ### Installation
@@ -61,76 +85,78 @@ Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 git clone https://github.com/Rixouu/qrcodegenerator.git
 cd qrcodegenerator
 npm install
+npx playwright install chromium   # once, if you run E2E
 npm run dev
 ```
 
 Open **http://localhost:3000**.
 
+### Environment
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL for **Open Graph**, **sitemap**, **robots**, and `metadataBase` (include `https://`) |
+
 ### Scripts
 
 | Script | Description |
 | --- | --- |
-| `npm run dev` | Next.js dev server (**Webpack** — matches `@ducanh2912/next-pwa`, which injects a Webpack config) |
-| `npm run build` | Production build with **Webpack** (required for the PWA plugin) |
-| `npm run start` | Start production server |
-| `npm run lint` | ESLint (flat config + `eslint-config-next`) |
-| `npm run generate:splash` | Regenerate Apple splashes + PNG icons from `public/icon-qr-code.svg` (uses **sharp**) |
+| `npm run dev` | Next dev (**Webpack**, required by the PWA plugin) |
+| `npm run build` | Production build (**Webpack**) |
+| `npm run start` | Production server (`next start`; with `output: 'standalone'`, prefer `node .next/standalone/server.js` on your host if documented by your platform) |
+| `npm run lint` | ESLint |
+| `npm run generate:splash` | Regenerate Apple splashes + PNG icons (**sharp**) |
+| `npm run test:e2e` | Playwright (build + server on **127.0.0.1:4173**) |
 
-> **PWA note:** the service worker is **disabled in development** so hot reload stays predictable. Run a **production build** (`npm run build && npm run start`) to verify install prompts, splash screens, and offline caching.
+> **PWA:** service worker is **off in development**. Use **`npm run build && npm run start`** to verify install, splash, and offline behavior.
 
 ## 📁 Project structure
 
 ```text
 qrcode-generator/
-├── public/
-│   ├── icons/              # PNG icons (generated)
-│   ├── splash/             # Apple startup images (generated)
-│   └── icon-qr-code.svg    # Source artwork for splashes + icons
-├── scripts/
-│   └── generate-apple-splash.mjs
+├── e2e/                    # Playwright specs
+├── public/icons, splash/
+├── scripts/generate-apple-splash.mjs
 ├── src/
-│   ├── app/                # App Router: layout, page, globals, manifest
-│   ├── components/         # UI + `pwa-install-banner`
-│   └── lib/                # `cn`, splash spec, `pwa-apple-startup`
-├── next.config.mjs         # Next config + PWA wrapper
-├── package.json
-└── README.md
+│   ├── app/                # layout, page, OG image, robots, sitemap, manifest
+│   ├── components/         # QR UI, PWA banner, theme, toaster
+│   ├── hooks/              # use-theme-qr-colors, use-client-mounted
+│   └── lib/                # cn, qr-png, qr-history, site-url, splash metadata
+├── playwright.config.ts
+├── next.config.mjs
+└── package.json
 ```
 
 ## 🌐 Deployment
 
-The app is configured for **standalone** output (`output: 'standalone'` in `next.config.mjs`), which works well on **Vercel** and other Node hosts.
+Configured for **standalone** output for Docker-style deploys.
 
 ```bash
 npm run build
 npm run start
 ```
 
-See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more options.
+Set **`NEXT_PUBLIC_SITE_URL`** on the host for correct SEO URLs.
 
 ## 🔧 Configuration
 
-- **Security / cache headers:** `vercel.json`
-- **Images:** `remotePatterns` for `vercel.com` and `nextjs.org` (replace or extend if you add remote images)
-- **`package.json` > `overrides`:** pins transitive **`postcss`** (≥ 8.5.10) and **`serialize-javascript`** (from Workbox via the PWA plugin) so `npm audit` stays clean without downgrading Next.js
-- **`outputFileTracingRoot`** in `next.config.mjs` avoids incorrect workspace root detection when a parent directory contains another lockfile
+- **`vercel.json`** — security headers
+- **`package.json` > `overrides`** — clean `npm audit` for transitive `postcss` / `serialize-javascript`
+- **`outputFileTracingRoot`** in `next.config.mjs` — workspace lockfile quirk
 
 ## 🤝 Contributing
 
-Contributions are welcome.
-
-1. Run `npm run lint`
-2. Open a PR with a short description of the change
+1. `npm run lint`
+2. `npm run test:e2e` (uses port **4173**; ensure it is free)
+3. Open a PR describing behavior + any storage key changes
 
 ## 📄 License
 
-No `LICENSE` file is bundled in this repository. If you need explicit terms, add a license file or clarify usage with the repository owner.
+No `LICENSE` file is bundled. Add one or clarify terms with the repository owner.
 
 ## 👥 Credits
 
-- **Next.js** team for the App Router and deployment story
-- **Shadcn UI** for accessible component patterns
-- **react-qr-code** for QR rendering
+- **Next.js** · **Shadcn UI** · **react-qr-code**
 
 ---
 

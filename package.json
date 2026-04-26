@@ -7,7 +7,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
-    "generate:splash": "node scripts/generate-apple-splash.mjs"
+    "generate:splash": "node scripts/generate-apple-splash.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -32,6 +33,7 @@
     "serialize-javascript": "^7.0.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.17.30",

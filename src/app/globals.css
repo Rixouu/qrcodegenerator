@@ -123,3 +123,30 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Skip link: off-screen until keyboard focus (clickable in automation with focus). */
+@layer components {
+  .skip-link {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  .skip-link:focus {
+    position: fixed;
+    left: 1rem;
+    top: max(0.75rem, env(safe-area-inset-top));
+    z-index: 100;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}

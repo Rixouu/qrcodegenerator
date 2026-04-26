@@ -1,19 +1,11 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useSyncExternalStore } from "react";
 import { Toaster } from "sonner";
-
-const emptySubscribe = () => () => {};
-const getClientSnapshot = () => true;
-const getServerSnapshot = () => false;
+import { useClientMounted } from "@/hooks/use-client-mounted";
 
 export function AppToaster() {
-  const mounted = useSyncExternalStore(
-    emptySubscribe,
-    getClientSnapshot,
-    getServerSnapshot,
-  );
+  const mounted = useClientMounted();
   const { resolvedTheme } = useTheme();
 
   const theme =

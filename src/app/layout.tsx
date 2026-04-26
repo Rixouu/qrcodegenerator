@@ -3,19 +3,45 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppToaster } from "@/components/app-toaster";
 import { PwaInstallBanner } from "@/components/pwa-install-banner";
+import { ThemeColorMeta } from "@/components/theme-color-meta";
 import { ThemeProvider } from "@/components/theme-provider";
 import { appleStartupImages } from "@/lib/pwa-apple-startup";
+import { getSiteUrl } from "@/lib/site-url";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const title = "QR Code Generator";
+const description =
+  "Generate QR codes for any URL or text. Live preview, error correction, copy, share, download PNG, and local history — PWA ready.";
+
 export const metadata: Metadata = {
-  title: "QR Code Generator",
-  description:
-    "Generate QR codes for any URL or text and download them as PNG images.",
-  applicationName: "QR Code Generator",
+  metadataBase: getSiteUrl(),
+  title: {
+    default: title,
+    template: `%s · ${title}`,
+  },
+  description,
+  applicationName: title,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: title,
+    title,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
   appleWebApp: {
     capable: true,
-    title: "QR Code Generator",
+    title,
     statusBarStyle: "black-translucent",
     startupImage: appleStartupImages,
   },
@@ -60,6 +86,16 @@ export default function RootLayout({
         className={`${inter.className} min-h-[100dvh] touch-manipulation antialiased`}
       >
         <ThemeProvider>
+          <a
+            href="#main-content"
+            className={cn(
+              "skip-link bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-medium shadow-md",
+              "focus:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+            )}
+          >
+            Skip to content
+          </a>
+          <ThemeColorMeta />
           {children}
           <PwaInstallBanner />
           <AppToaster />

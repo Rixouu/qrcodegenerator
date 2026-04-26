@@ -2,20 +2,12 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
+import { useClientMounted } from "@/hooks/use-client-mounted";
 import { cn } from "@/lib/utils";
 
-const emptySubscribe = () => () => {};
-const getClientSnapshot = () => true;
-const getServerSnapshot = () => false;
-
 export function ThemeToggle({ className }: { className?: string }) {
-  const mounted = useSyncExternalStore(
-    emptySubscribe,
-    getClientSnapshot,
-    getServerSnapshot,
-  );
+  const mounted = useClientMounted();
   const { theme, setTheme } = useTheme();
 
   if (!mounted) {
@@ -46,6 +38,7 @@ export function ThemeToggle({ className }: { className?: string }) {
         className="h-8 w-8 px-0"
         onClick={() => setTheme("light")}
         aria-pressed={theme === "light"}
+        aria-label="Light theme"
         title="Light"
       >
         <Sun className="size-4" aria-hidden />
@@ -57,6 +50,7 @@ export function ThemeToggle({ className }: { className?: string }) {
         className="h-8 w-8 px-0"
         onClick={() => setTheme("system")}
         aria-pressed={theme === "system"}
+        aria-label="System theme"
         title="System"
       >
         <Monitor className="size-4" aria-hidden />
@@ -68,6 +62,7 @@ export function ThemeToggle({ className }: { className?: string }) {
         className="h-8 w-8 px-0"
         onClick={() => setTheme("dark")}
         aria-pressed={theme === "dark"}
+        aria-label="Dark theme"
         title="Dark"
       >
         <Moon className="size-4" aria-hidden />
