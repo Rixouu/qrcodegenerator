@@ -1,11 +1,28 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import withPWAInit from "@ducanh2912/next-pwa";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  scope: "/",
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  output: "standalone",
+  outputFileTracingRoot: path.join(__dirname),
   images: {
-    domains: ['vercel.com', 'nextjs.org'],
-    formats: ['image/avif', 'image/webp'],
-  }
+    remotePatterns: [
+      { protocol: "https", hostname: "vercel.com", pathname: "/**" },
+      { protocol: "https", hostname: "nextjs.org", pathname: "/**" },
+    ],
+    formats: ["image/avif", "image/webp"],
+  },
 };
 
-export default nextConfig; 
+export default withPWA(nextConfig);

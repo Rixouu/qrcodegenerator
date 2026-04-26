@@ -1,100 +1,132 @@
-# QR Code Generator
+# 📱 QR Code Generator
 
-A modern, responsive QR code generator built with Next.js, TypeScript, and Shadcn UI. Generate customizable QR codes for any URL or text and download them as PNG images.
+**QR Code Generator** is a small, focused web app for creating scannable QR codes from any text or URL: pick foreground and background colors, preview in real time, and download a PNG—no accounts, no backend required for the core flow.
 
-## Features
+Next.js 15 · React 19 · TypeScript · Tailwind CSS 4 · Shadcn UI · PWA ready
 
-- Generate QR codes from any text or URL input
-- Customize QR code colors (foreground and background)
-- Real-time QR code preview as you type
-- Download QR codes as PNG images
-- Responsive design works on desktop and mobile
-- Toast notifications for user feedback
+## ✨ Key Features
 
-## Technologies Used
+### 🔲 Generate & preview
 
-- [Next.js](https://nextjs.org/) with App Router
-- TypeScript
-- [react-qr-code](https://www.npmjs.com/package/react-qr-code) for QR code generation
-- [Shadcn UI](https://ui.shadcn.com/) for UI components
-- [Tailwind CSS](https://tailwindcss.com/) for styling
-- [Sonner](https://sonner.emilkowal.ski/) for toast notifications
+- Enter any **URL or plain text**; the QR updates as you type
+- **Foreground and background** color controls with live preview
+- Built on [`react-qr-code`](https://www.npmjs.com/package/react-qr-code)
 
-## Getting Started
+### 💾 Download
+
+- **Download as PNG** from the in-page QR preview (canvas-backed export)
+- Toast feedback via **Sonner**
+
+### 📱 PWA & install UX
+
+- **Web app manifest** and **service worker** (production builds) via [`@ducanh2912/next-pwa`](https://github.com/DuCanhGH/next-pwa)
+- **`PwaInstallBanner`**: Chrome **Install** when `beforeinstallprompt` is available; **iOS Safari** guidance for **Add to Home Screen**; dismiss state stored in `localStorage`
+- App icon: `public/icon-qr-code.svg`
+
+### 🎨 UI
+
+- **Shadcn UI** primitives (card, button, input, form patterns)
+- **Tailwind CSS 4** with the project’s design tokens in `src/app/globals.css`
+- Responsive layout for **mobile and desktop**
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- **Next.js 15** (App Router, `src/app`)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS 4** (`@tailwindcss/postcss`)
+- **Shadcn UI** + **Radix** primitives
+- **Lucide** icons
+
+### QR & forms
+
+- **react-qr-code** for matrix rendering
+- **react-hook-form** + **Zod** + **@hookform/resolvers** (available for form validation patterns)
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18.x or later
-- npm or yarn package manager
+- **Node.js 20+** (recommended; LTS aligns with current Next.js defaults)
+- **npm**
 
 ### Installation
 
-1. Clone the repository:
-
 ```bash
-git clone https://github.com/yourusername/qrcode-generator.git
-cd qrcode-generator
-```
-
-2. Install dependencies:
-
-```bash
+git clone https://github.com/Rixouu/qrcodegenerator.git
+cd qrcodegenerator
 npm install
-# or
-yarn install
-```
-
-3. Run the development server:
-
-```bash
 npm run dev
-# or
-yarn dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+Open **http://localhost:3000**.
 
-## Usage
+### Scripts
 
-1. Enter any URL or text in the input field
-2. Use the color pickers to customize the foreground and background colors
-3. The QR code updates automatically as you type
-4. Click the "Download QR Code" button to save the QR code as a PNG image
+| Script        | Description                    |
+| ------------- | ------------------------------ |
+| `npm run dev` | Next.js dev server             |
+| `npm run build` | Production build (`next build`) |
+| `npm run start` | Start production server       |
+| `npm run lint`  | ESLint (`next lint`)           |
 
-## Building for Production
+> **PWA note:** the service worker is **disabled in development** so hot reload stays predictable. Run a **production build** (`npm run build && npm run start`) to verify install prompts and offline caching.
 
-To build the application for production:
+## 📁 Project structure
+
+```text
+qrcode-generator/
+├── public/                 # Static assets (PWA outputs are gitignored in prod)
+├── src/
+│   ├── app/                # App Router: layout, page, globals, manifest
+│   ├── components/       # UI + `pwa-install-banner`
+│   └── lib/                # Utilities (e.g. `cn`)
+├── next.config.mjs         # Next config + PWA wrapper
+├── package.json
+└── README.md
+```
+
+## 🌐 Deployment
+
+The app is configured for **standalone** output (`output: 'standalone'` in `next.config.mjs`), which works well on **Vercel** and other Node hosts.
 
 ```bash
 npm run build
-# or
-yarn build
-```
-
-Then, you can start the production server:
-
-```bash
 npm run start
-# or
-yarn start
 ```
 
-## Deployment
+See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more options.
 
-The easiest way to deploy your QR Code Generator is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
+## 🔧 Configuration
 
-For more deployment options, check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
+- **Security / cache headers:** `vercel.json`
+- **Images:** `remotePatterns` for `vercel.com` and `nextjs.org` (replace or extend if you add remote images)
+- **`package.json` > `overrides`:** pins transitive **`postcss`** (≥ 8.5.10) and **`serialize-javascript`** (from Workbox via the PWA plugin) so `npm audit` stays clean without downgrading Next.js
 
-## Contributing
+### Stack upgrades (Apr 2026)
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- **Next.js** is on the latest **15.5.x** patch line (`15.5.15`) for security fixes; **Next.js 16** is available if you want a major bump and are ready to follow the [upgrade guide](https://nextjs.org/docs/app/building-your-application/upgrading).
+- **React 19** is already in use; keep `@types/react` aligned with your TypeScript setup when you upgrade.
 
-## License
+## 🤝 Contributing
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Contributions are welcome.
 
-## Acknowledgments
+1. Run `npm run lint`
+2. Open a PR with a short description of the change
 
-- [Next.js](https://nextjs.org/) for the React framework
-- [Shadcn UI](https://ui.shadcn.com/) for the beautiful UI components
-- [react-qr-code](https://www.npmjs.com/package/react-qr-code) for QR code generation functionality
+## 📄 License
+
+No `LICENSE` file is bundled in this repository. If you need explicit terms, add a license file or clarify usage with the repository owner.
+
+## 👥 Credits
+
+- **Next.js** team for the App Router and deployment story
+- **Shadcn UI** for accessible component patterns
+- **react-qr-code** for QR rendering
+
+---
+
+**Built for quick, shareable QR codes.**
