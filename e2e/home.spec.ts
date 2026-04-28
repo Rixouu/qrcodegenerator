@@ -11,12 +11,13 @@ test.describe("Home", () => {
   test("loads hero and QR card", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(
-      page.getByRole("heading", { name: "QR Code Generator", level: 1 }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Your QR code", level: 2 }),
+      page.getByRole("heading", {
+        name: "QR Code Generator",
+        level: 1,
+      }),
     ).toBeVisible();
     await expect(page.getByLabel("URL or text")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Download" })).toBeVisible();
   });
 
   test("theme toggle applies dark class on html", async ({ page }) => {

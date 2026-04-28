@@ -14,7 +14,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     return (
       <div
         className={cn(
-          "flex h-9 w-[104px] shrink-0 rounded-lg border border-border bg-muted/30",
+          "flex h-10 w-[126px] shrink-0 rounded-full border border-border bg-background",
           className,
         )}
         aria-hidden
@@ -25,7 +25,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "inline-flex h-9 shrink-0 items-center gap-0.5 rounded-lg border border-border bg-muted/40 p-0.5 shadow-sm",
+        "inline-flex h-10 shrink-0 items-center gap-1 rounded-full border border-border bg-background p-1",
         className,
       )}
       role="group"
@@ -33,9 +33,12 @@ export function ThemeToggle({ className }: { className?: string }) {
     >
       <Button
         type="button"
-        variant={theme === "light" ? "secondary" : "ghost"}
+        variant="ghost"
         size="sm"
-        className="h-8 w-8 px-0"
+        className={cn(
+          "h-8 w-8 rounded-full px-0 text-muted-foreground",
+          theme === "light" && "bg-muted text-foreground",
+        )}
         onClick={() => setTheme("light")}
         aria-pressed={theme === "light"}
         aria-label="Light theme"
@@ -45,9 +48,12 @@ export function ThemeToggle({ className }: { className?: string }) {
       </Button>
       <Button
         type="button"
-        variant={theme === "system" ? "secondary" : "ghost"}
+        variant="ghost"
         size="sm"
-        className="h-8 w-8 px-0"
+        className={cn(
+          "h-8 w-8 rounded-full px-0 text-muted-foreground",
+          theme === "system" && "bg-muted text-foreground",
+        )}
         onClick={() => setTheme("system")}
         aria-pressed={theme === "system"}
         aria-label="System theme"
@@ -57,9 +63,12 @@ export function ThemeToggle({ className }: { className?: string }) {
       </Button>
       <Button
         type="button"
-        variant={theme === "dark" ? "secondary" : "ghost"}
+        variant="ghost"
         size="sm"
-        className="h-8 w-8 px-0"
+        className={cn(
+          "h-8 w-8 rounded-full px-0 text-muted-foreground",
+          theme === "dark" && "bg-muted text-foreground",
+        )}
         onClick={() => setTheme("dark")}
         aria-pressed={theme === "dark"}
         aria-label="Dark theme"

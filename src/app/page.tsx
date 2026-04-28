@@ -6,20 +6,20 @@ export default function Home() {
     <main
       id="main-content"
       tabIndex={-1}
-      className="ring-offset-background relative flex min-h-[100dvh] min-h-screen flex-col items-center justify-between px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(3.5rem,env(safe-area-inset-top))] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-24 md:pt-24"
+      className="ring-offset-background relative min-h-[100dvh] min-h-screen overflow-x-hidden bg-background px-4 pb-[calc(6.5rem+env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-6 sm:pb-12 lg:px-8"
     >
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-end px-4 pt-[max(0.75rem,env(safe-area-inset-top))] md:absolute md:px-8 md:pt-8">
-        <div className="pointer-events-auto">
-          <ThemeToggle />
-        </div>
-      </div>
-      <div className="flex w-full max-w-3xl flex-col items-center justify-center space-y-8">
-        <h1 className="text-center text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          QR Code Generator
-        </h1>
-        <p className="text-center text-muted-foreground">
-          Enter any URL or text to generate a QR code. Download your QR code as a PNG image.
-        </p>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 pb-8 sm:gap-6">
+        <header className="flex items-start justify-between gap-4 border-b border-border/70 pb-4 sm:pb-5">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              QR Code Generator
+            </h1>
+            <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
+              Generate, customize, decode, and export QR codes.
+            </p>
+          </div>
+          <ThemeToggle className="shrink-0" />
+        </header>
         <QrCodeGenerator defaultValue="https://nextjs.org" />
       </div>
     </main>
