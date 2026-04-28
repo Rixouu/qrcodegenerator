@@ -1,4 +1,4 @@
-**QR Code Generator** is a small, focused web app for creating scannable QR codes from any text or URL: pick foreground and background colors, preview in real time, and download a PNG—no accounts, no backend required for the core flow.
+**QR Code Generator** is a modern QR tool for creating scannable codes from URLs, text, and common templates (Wi‑Fi, contact, email, SMS, phone). Customize colors, size, error correction, and logo overlay with live preview, then export as PNG/SVG/PDF, copy/share, decode existing QR images, and keep a lightweight local history — no accounts, no backend required.
 
 The current product was created by [Jonathan Rycx](https://github.com/Rixouu), who leads product direction, design, and full-stack implementation.
 
@@ -10,9 +10,15 @@ The current product was created by [Jonathan Rycx](https://github.com/Rixouu), w
 ![PWA Ready](https://img.shields.io/badge/PWA-Install%20Banner-9ca3af)
 
 ### 🔲 Generate & Preview
-- Enter any **URL or plain text**; the QR updates as you type
-- **Foreground and background** color controls with live preview
-- **Error correction** (L / M / Q / H) and **matrix size** (128–400px) controls
+- Generate QR codes from:
+  - **Text / URL**
+  - **Wi‑Fi** (SSID, password, auth, hidden network)
+  - **Contact** (vCard)
+  - **Email**, **SMS**, **Phone**
+- **Foreground/background** colors with live preview + one-click **Sync with theme**
+- **Error correction** (L / M / Q / H) and **size** controls (128–400px)
+- Optional **logo overlay** with adjustable size
+- **Safe mode** to improve scanning when a logo is enabled (forces High + adds padding)
 - Built on [`react-qr-code`](https://www.npmjs.com/package/react-qr-code)
 
 ### 🎨 Theme-aware Colors
@@ -21,19 +27,28 @@ The current product was created by [Jonathan Rycx](https://github.com/Rixouu), w
 - **`ThemeColorMeta`** updates `<meta name="theme-color">` when the resolved theme changes (PWA / mobile chrome bar)
 
 ### 💾 Export & Share
-- **Download** PNG (same canvas pipeline as before)
+- **Download** as **PNG**, **SVG**, or **PDF**
 - **Copy image** to the clipboard (`ClipboardItem` image/png) where supported
 - **Share** via the Web Share API with a PNG file when `navigator.canShare` allows it
 - Successful export actions append an entry to **local history**
+- PDF export uses [`pdf-lib`](https://www.npmjs.com/package/pdf-lib)
 
 ### 📜 Local History
-- Last **20** payloads (value, colors, level, size) in **`localStorage`** (`qr-code-generator-history-v1`)
-- **Recent** list in the card: tap to **restore**; **Clear** wipes storage
+- Last **20** payloads stored locally in **`localStorage`** (`qr-code-generator-history-v2`)
+- Restore a previous entry with one tap
+- **Favorites**, **duplicate**, and **inline edit** (name + tags)
+- **Clear history** wipes local storage
+
+### 🔍 Decode
+- Upload a QR image to **extract its content** (client-side via [`jsqr`](https://www.npmjs.com/package/jsqr))
+- **Copy** decoded text or **Use** it to populate the generator
 
 ### 📱 PWA, Splash & Install UX
 - **Web app manifest** and **service worker** (production builds) via [`@ducanh2912/next-pwa`](https://github.com/DuCanhGH/next-pwa)
 - **Apple startup splash screens** (`metadata.appleWebApp.startupImage`) — spec in `src/lib/apple-splash-spec.json`, assets in `public/splash/`
-- **Touch icons** under `public/icons/` (regenerate with `npm run generate:splash` after changing the SVG)
+- **App icons + splash + favicons** are generated from `public/icon-qr-code.svg` / `public/icon-qr-code.png`:
+  - Run `npm run generate:icons` after updating the icon files
+  - Splash background color is **#090E16**
 - **`PwaInstallBanner`**: Chrome install prompt + iOS “Add to Home Screen” guidance
 - **Mobile layout:** `100dvh`, safe-area padding, `viewport-fit=cover`, `touch-manipulation`, `black-translucent` status bar
 
@@ -47,7 +62,7 @@ The current product was created by [Jonathan Rycx](https://github.com/Rixouu), w
 - **Playwright** (`e2e/`) — smoke tests for home, theme toggle, download toast, skip link. First run: `npx playwright install chromium`.
 
 ### Prerequisites
-- **Node.js 20.9+**
+- **Node.js 20.19+** (or **22.13+**)
 - **npm**
 
 ### Installation
@@ -73,7 +88,7 @@ Canonical site URL for **Open Graph**, **sitemap**, **robots**, and `metadataBas
 qrcode-generator/
 ├── e2e/                    # Playwright specs
 ├── public/                 # Static assets, icons, splash
-├── scripts/                # generate-apple-splash.mjs
+├── scripts/                # icon + splash generators
 ├── src/
 │   ├── app/                # layout, page, OG image, robots, sitemap, manifest
 │   ├── components/         # QR UI, PWA banner, theme, toaster
@@ -99,6 +114,11 @@ npm run start            # Production server
 ```bash
 npm run lint             # ESLint
 npm run test:e2e         # Playwright (build + server on 127.0.0.1:4173)
+```
+
+### Icons / Splash
+```bash
+npm run generate:icons    # Regenerate public/icons, public/splash, favicons
 ```
 
 ### ♿ Accessibility
