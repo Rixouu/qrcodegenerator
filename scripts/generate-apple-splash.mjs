@@ -14,7 +14,7 @@ const specPath = path.join(root, "src", "lib", "apple-splash-spec.json");
 const splashDir = path.join(root, "public", "splash");
 const iconsDir = path.join(root, "public", "icons");
 
-const BG = { r: 0, g: 0, b: 0, alpha: 1 };
+const BG = { r: 9, g: 14, b: 22, alpha: 1 };
 
 async function compositeSplash(width, height, iconBuffer) {
   return sharp({

@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { useEffect } from "react";
 
 const LIGHT = "#fafafc";
-const DARK = "#252525";
+const DARK = "#090E16";
 
 /**
  * Updates `<meta name="theme-color">` from the resolved app theme (PWA / mobile chrome).

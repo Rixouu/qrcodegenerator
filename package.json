@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "generate:splash": "node scripts/generate-apple-splash.mjs",
+    "generate:icons": "node scripts/generate-apple-splash.mjs && node scripts/generate-favicon.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -45,6 +46,7 @@
     "eslint-config-next": "16.2.4",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "png-to-ico": "^2.1.0"
   }
 }
