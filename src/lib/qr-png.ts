@@ -54,6 +54,13 @@ export function readThemeQrHexFromDocument(): { fg: string; bg: string } {
 export async function qrSvgToPngBlob(
   svg: SVGElement,
   bgColor: string,
+  overlay?: {
+    dataUrl: string;
+    sizePx: number;
+    paddingPx?: number;
+    backgroundColor?: string;
+    borderRadiusPx?: number;
+  },
 ): Promise<Blob> {
   const svgData = new XMLSerializer().serializeToString(svg);
   const svgBlob = new Blob([svgData], {
@@ -76,15 +83,60 @@ export async function qrSvgToPngBlob(
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
-        URL.revokeObjectURL(svgUrl);
-        canvas.toBlob(
-          (blob) => {
-            if (blob) resolve(blob);
-            else reject(new Error("toBlob"));
-          },
-          "image/png",
-          1,
-        );
+        const finalize = () => {
+          URL.revokeObjectURL(svgUrl);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) resolve(blob);
+              else reject(new Error("toBlob"));
+            },
+            "image/png",
+            1,
+          );
+        };
+
+        if (!overlay?.dataUrl) {
+          finalize();
+          return;
+        }
+
+        const overlayImg = new Image();
+        overlayImg.onload = () => {
+          const sizePx = Math.max(1, Math.floor(overlay.sizePx));
+          const x = Math.round((canvas.width - sizePx) / 2);
+          const y = Math.round((canvas.height - sizePx) / 2);
+          const paddingPx = Math.max(0, Math.floor(overlay.paddingPx ?? 0));
+          const backgroundColor = overlay.backgroundColor ?? bgColor;
+          const borderRadiusPx = Math.max(0, Math.floor(overlay.borderRadiusPx ?? 0));
+
+          if (paddingPx > 0) {
+            const bx = x - paddingPx;
+            const by = y - paddingPx;
+            const bw = sizePx + paddingPx * 2;
+            const bh = sizePx + paddingPx * 2;
+            ctx.fillStyle = backgroundColor;
+            if (borderRadiusPx > 0) {
+              ctx.beginPath();
+              const r = Math.min(borderRadiusPx, Math.min(bw, bh) / 2);
+              ctx.moveTo(bx + r, by);
+              ctx.arcTo(bx + bw, by, bx + bw, by + bh, r);
+              ctx.arcTo(bx + bw, by + bh, bx, by + bh, r);
+              ctx.arcTo(bx, by + bh, bx, by, r);
+              ctx.arcTo(bx, by, bx + bw, by, r);
+              ctx.closePath();
+              ctx.fill();
+            } else {
+              ctx.fillRect(bx, by, bw, bh);
+            }
+          }
+
+          ctx.drawImage(overlayImg, x, y, sizePx, sizePx);
+          finalize();
+        };
+        overlayImg.onerror = () => {
+          finalize();
+        };
+        overlayImg.src = overlay.dataUrl;
       } catch (e) {
         URL.revokeObjectURL(svgUrl);
         reject(e);

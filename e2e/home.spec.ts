@@ -29,7 +29,7 @@ test.describe("Home", () => {
 
   test("download shows success toast", async ({ page }) => {
     await waitForHydratedThemeControls(page);
-    await page.getByRole("button", { name: "Download" }).click();
+    await page.getByRole("button", { name: "Download PNG" }).click();
     await expect(
       page.getByText("PNG saved to your device.", { exact: true }),
     ).toBeVisible({ timeout: 20_000 });
