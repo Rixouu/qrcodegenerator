@@ -36,9 +36,9 @@ export function QrCodeGenerator({
 
   return (
     <>
-      <div className="mx-auto w-full max-w-6xl">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_400px]">
-            <aside className="order-1 lg:order-2 lg:sticky lg:top-6 lg:self-start">
+      <div className="w-full rounded-[2rem] bg-card/35 p-4 ring-1 ring-border/60 shadow-[0_30px_80px_-60px_rgba(37,99,235,0.35)] sm:p-6">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-0 xl:grid-cols-[minmax(0,1fr)_400px]">
+            <aside className="order-1 lg:order-2 lg:sticky lg:top-6 lg:self-start lg:border-l lg:border-border/50 lg:pl-10">
               <div className="space-y-5">
                 <section className="rounded-[1.6rem] bg-linear-to-br from-primary/22 via-card to-card p-[1px] shadow-[0_18px_50px_-28px_rgba(37,99,235,0.45)]">
                   <div className="rounded-[calc(1.6rem-1px)] border border-white/8 bg-card p-4">
@@ -138,11 +138,8 @@ export function QrCodeGenerator({
               </div>
             </aside>
 
-            <div className="order-2 space-y-6 lg:order-1">
-              <section
-                id="content-section"
-                className="scroll-mt-24 rounded-[1.6rem] border border-border/70 bg-background/45 p-6 shadow-[0_24px_60px_-42px_rgba(37,99,235,0.22)]"
-              >
+            <div className="order-2 space-y-10 lg:order-1 lg:pr-10">
+              <section id="content-section" className="scroll-mt-24">
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Build</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Content</h2>
@@ -187,10 +184,7 @@ export function QrCodeGenerator({
                 />
               </section>
 
-              <section
-                id="style-section"
-                className="scroll-mt-24 rounded-[1.6rem] border border-border/70 bg-background/45 p-6 shadow-[0_24px_60px_-42px_rgba(37,99,235,0.22)]"
-              >
+              <section id="style-section" className="scroll-mt-24">
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Refine</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Style</h2>
@@ -216,10 +210,7 @@ export function QrCodeGenerator({
                 />
               </section>
 
-              <section
-                id="decode-section"
-                className="scroll-mt-24 rounded-[1.6rem] border border-border/70 bg-background/45 p-6 shadow-[0_24px_60px_-42px_rgba(37,99,235,0.22)]"
-              >
+              <section id="decode-section" className="scroll-mt-24">
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Inspect</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Decode</h2>
@@ -234,10 +225,7 @@ export function QrCodeGenerator({
                 />
               </section>
 
-              <section
-                id="history-section"
-                className="scroll-mt-24 rounded-[1.6rem] border border-border/70 bg-background/45 p-6 shadow-[0_24px_60px_-42px_rgba(37,99,235,0.22)] lg:hidden"
-              >
+              <section id="history-section" className="scroll-mt-24 lg:hidden">
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Saved</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">History</h2>
