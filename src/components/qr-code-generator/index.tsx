@@ -1,6 +1,7 @@
 "use client";
 
 import { History, ScanLine, SlidersHorizontal, Type } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ActionsFooter } from "@/components/qr-code-generator/actions-footer";
 import { ContentFields } from "@/components/qr-code-generator/content-fields";
@@ -9,15 +10,19 @@ import { DecodeSection } from "@/components/qr-code-generator/decode-section";
 import { HistorySection } from "@/components/qr-code-generator/history-section";
 import { QrPreview } from "@/components/qr-code-generator/qr-preview";
 import { useQrCodeGenerator } from "@/components/qr-code-generator/use-qr-code-generator";
+import { cn } from "@/lib/utils";
 
 interface QrCodeGeneratorProps {
   defaultValue?: string;
 }
 
+type MobileTab = "content" | "style" | "decode" | "history";
+
 export function QrCodeGenerator({
   defaultValue = "https://example.com",
 }: QrCodeGeneratorProps) {
   const qr = useQrCodeGenerator({ defaultValue });
+  const [mobileTab, setMobileTab] = useState<MobileTab>("content");
   const presetLabel =
     {
       text: "Text/URL",
@@ -27,12 +32,20 @@ export function QrCodeGenerator({
       sms: "SMS",
       phone: "Phone",
     }[qr.contentState.preset] ?? "Text/URL";
-  const mobileNavItems = [
-    { href: "#content-section", label: "Content", icon: Type },
-    { href: "#style-section", label: "Style", icon: SlidersHorizontal },
-    { href: "#decode-section", label: "Scan", icon: ScanLine },
-    { href: "#history-section", label: "History", icon: History },
-  ];
+  const mobileNavItems = useMemo(
+    () => [
+      { tab: "content" as const, label: "Content", icon: Type },
+      { tab: "style" as const, label: "Style", icon: SlidersHorizontal },
+      { tab: "decode" as const, label: "Scan", icon: ScanLine },
+      { tab: "history" as const, label: "History", icon: History },
+    ],
+    [],
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [mobileTab]);
 
   return (
     <>
@@ -139,7 +152,14 @@ export function QrCodeGenerator({
             </aside>
 
             <div className="order-2 space-y-10 lg:order-1 lg:pr-10">
-              <section id="content-section" className="scroll-mt-24">
+              <section
+                id="content-section"
+                className={cn(
+                  "scroll-mt-24",
+                  mobileTab !== "content" && "hidden",
+                  "lg:block",
+                )}
+              >
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Build</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Content</h2>
@@ -184,7 +204,14 @@ export function QrCodeGenerator({
                 />
               </section>
 
-              <section id="style-section" className="scroll-mt-24">
+              <section
+                id="style-section"
+                className={cn(
+                  "scroll-mt-24",
+                  mobileTab !== "style" && "hidden",
+                  "lg:block",
+                )}
+              >
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Refine</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Style</h2>
@@ -210,7 +237,14 @@ export function QrCodeGenerator({
                 />
               </section>
 
-              <section id="decode-section" className="scroll-mt-24">
+              <section
+                id="decode-section"
+                className={cn(
+                  "scroll-mt-24",
+                  mobileTab !== "decode" && "hidden",
+                  "lg:block",
+                )}
+              >
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Inspect</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">Decode</h2>
@@ -225,7 +259,13 @@ export function QrCodeGenerator({
                 />
               </section>
 
-              <section id="history-section" className="scroll-mt-24 lg:hidden">
+              <section
+                id="history-section"
+                className={cn(
+                  "scroll-mt-24 lg:hidden",
+                  mobileTab !== "history" && "hidden",
+                )}
+              >
                 <div className="mb-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Saved</p>
                   <h2 className="mt-1 text-base font-semibold tracking-tight text-foreground">History</h2>
@@ -250,19 +290,30 @@ export function QrCodeGenerator({
         </div>
       </div>
 
-      <nav className="fixed inset-x-4 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-background/95 p-1 lg:hidden">
+      <nav
+        className="fixed inset-x-4 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-background/95 p-1 lg:hidden"
+        aria-label="Sections"
+      >
         {mobileNavItems.map((item) => {
           const Icon = item.icon;
+          const active = item.tab === mobileTab;
 
           return (
-            <a
-              key={item.href}
-              href={item.href}
-              className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-full px-2 py-2 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            <button
+              key={item.tab}
+              type="button"
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "flex min-w-0 flex-1 flex-col items-center gap-1 rounded-full px-2 py-2 text-[11px] font-medium transition-colors",
+                active
+                  ? "bg-primary/12 text-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+              onClick={() => setMobileTab(item.tab)}
             >
               <Icon className="size-4" aria-hidden />
               <span>{item.label}</span>
-            </a>
+            </button>
           );
         })}
       </nav>
